@@ -21,7 +21,7 @@ namespace RetinalVessel
 			BitmapWriter.Save(vs.CanalPixels, @"C:\Users\szyme\Downloads\inverted_green_canal.png");
 
 			vs.Calculate();
-
+			var svmFeatures = vs.SVMFeaturesMatrix;
 			BitmapWriter.Save(vs.Result, @"C:\Users\szyme\Downloads\result.png");
 			Console.ReadKey();
 		}	

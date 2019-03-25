@@ -49,6 +49,8 @@
     <Compile Include="PointsPair.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SVMFeatures.cs" />
+    <Compile Include="VesselSegmentatioMethod.cs" />
     <Compile Include="VesselSegmentator.cs" />
   </ItemGroup>
   <ItemGroup>
