@@ -21,9 +21,14 @@ namespace RetinalVessel
 		public byte[][] CanalPixels { get => canalPixels; }
 
 		/// <summary>
-		/// Radius of filter window
+		/// Radius of filter window field
 		/// </summary>
 		int windowRadius;
+
+		/// <summary>
+		/// Radius of filter window property
+		/// </summary>
+		public int WindowRadius { get => windowRadius; set { windowRadius = value; Init(); } }
 
 		/// <summary>
 		/// Diameter of filter window
@@ -31,9 +36,22 @@ namespace RetinalVessel
 		int windowDiameter;
 
 		/// <summary>
-		/// Length of small line
+		/// Length of small line field
 		/// </summary>
 		int smallLineLenght;
+
+		/// <summary>
+		/// Length of small line property
+		/// </summary>
+		public int SmallLineLenght
+		{
+			get => smallLineLenght;
+			set
+			{
+				smallLineLenght = value;
+				smallLineIndexesDiff = (value - 1) / 2;
+			}
+		}
 
 		/// <summary>
 		/// Value used to calc small line
@@ -66,9 +84,14 @@ namespace RetinalVessel
 		public SVMFeatures[][] SVMFeaturesMatrix;
 
 		/// <summary>
-		/// Threshold of pixel power level when pixel belongs to vessel or not
+		/// Threshold of pixel power level when pixel belongs to vessel or not - field
 		/// </summary>
-		public double Threshold;
+		public double threshold;
+
+		/// <summary>
+		/// Threshold of pixel power level when pixel belongs to vessel or not - property
+		/// </summary>
+		public double Threshold { get => threshold; set { threshold = value; Init(); } }
 
 		/// <summary>
 		/// Type of filtering method
@@ -82,7 +105,7 @@ namespace RetinalVessel
 		{
 			windowRadius = 7;
 			smallLineLenght = 3;
-			Threshold = 2.5;
+			threshold = 2.5;
 			VesselSegmentatioMethodType = VesselSegmentatioMethod.Both;
 			Init();
 		}
@@ -196,14 +219,14 @@ namespace RetinalVessel
 				{
 					double averageWindowGrayScale = GetAverageWindowGrayScale(j, i);
 					double largestLineAverageGrayLevel = GetLargestLineAverageGrayLevel(j, i, out double largestSmallLineAverageGrayLevel);
-					double pixelPowerOfMainLine = largestLineAverageGrayLevel -averageWindowGrayScale;
+					double pixelPowerOfMainLine = largestLineAverageGrayLevel - averageWindowGrayScale;
 					SVMFeaturesMatrix[i][j] = new SVMFeatures()
 					{
 						PixelGrayLevel = canalPixels[i][j],
 						PixelPowerOfMainLine = pixelPowerOfMainLine,
 						PixelPowerOfSmallLine = largestSmallLineAverageGrayLevel - averageWindowGrayScale
 					};
-					Result[i][j] = pixelPowerOfMainLine > Threshold ? byte.MaxValue : byte.MinValue;
+					Result[i][j] = pixelPowerOfMainLine > threshold ? byte.MaxValue : byte.MinValue;
 				}
 			}
 		}
@@ -240,7 +263,7 @@ namespace RetinalVessel
 				{
 					double averageWindowGrayScale = GetAverageWindowGrayScale(j, i);
 					double largestLineAverageGrayLevel = GetLargestLineAverageGrayLevel(j, i);
-					Result[i][j] = largestLineAverageGrayLevel - averageWindowGrayScale > Threshold ? byte.MaxValue : byte.MinValue;
+					Result[i][j] = largestLineAverageGrayLevel - averageWindowGrayScale > threshold ? byte.MaxValue : byte.MinValue;
 				}
 			}
 		}

@@ -15,6 +15,8 @@ namespace RetinalVessel
 		static void Main(string[] args)
 		{
 			VesselSegmentator vs = new VesselSegmentator();
+			vs.WindowRadius = 9;
+
 			vs.SetInput(new Bitmap(@"C:\Users\szyme\Downloads\im0001.png"), true);
 
 			BitmapWriter.Save(vs.GetReversedCanalPixels(), @"C:\Users\szyme\Downloads\green_canal.png");
