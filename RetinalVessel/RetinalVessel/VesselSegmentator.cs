@@ -10,6 +10,11 @@ namespace RetinalVessel
 	/// </summary>
 	public class VesselSegmentator
 	{
+		private readonly int defaultWindowRadius = 7;
+		private readonly int defaultSmallLineLenght = 3;
+		private readonly double defaultThreshold = 2.5;
+		private readonly VesselSegmentatioMethod defaultVesselSegmentatioMethodType = VesselSegmentatioMethod.Both;
+
 		/// <summary>
 		/// Jagged array with pixels values
 		/// </summary>
@@ -64,9 +69,19 @@ namespace RetinalVessel
 		int height;
 
 		/// <summary>
+		/// Height of image - property
+		/// </summary>
+		public int Height { get => height; }
+
+		/// <summary>
 		/// Width of image
 		/// </summary>
 		int width;
+
+		/// <summary>
+		/// Width of image - property
+		/// </summary>
+		public int Width { get => width; }
 
 		/// <summary>
 		/// Points pairs list of lines in window
@@ -84,14 +99,9 @@ namespace RetinalVessel
 		public SVMFeatures[][] SVMFeaturesMatrix;
 
 		/// <summary>
-		/// Threshold of pixel power level when pixel belongs to vessel or not - field
-		/// </summary>
-		public double threshold;
-
-		/// <summary>
 		/// Threshold of pixel power level when pixel belongs to vessel or not - property
 		/// </summary>
-		public double Threshold { get => threshold; set { threshold = value; Init(); } }
+		public double Threshold;
 
 		/// <summary>
 		/// Type of filtering method
@@ -103,13 +113,25 @@ namespace RetinalVessel
 		/// </summary>
 		public VesselSegmentator()
 		{
-			windowRadius = 7;
-			smallLineLenght = 3;
-			threshold = 2.5;
-			VesselSegmentatioMethodType = VesselSegmentatioMethod.Both;
+			windowRadius = defaultWindowRadius;
+			smallLineLenght = defaultSmallLineLenght;
+			Threshold = defaultThreshold;
+			VesselSegmentatioMethodType = defaultVesselSegmentatioMethodType;
 			Init();
 		}
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="helper">Helper class contains all values for parameters of filter</param>
+		public VesselSegmentator(VesselSegmentatorConstructorHelper helper)
+		{
+			windowRadius = helper.windowRadius ?? defaultWindowRadius;
+			smallLineLenght = helper.smallLineLenght ?? defaultSmallLineLenght;
+			Threshold = helper.Threshold ?? defaultThreshold;
+			VesselSegmentatioMethodType = helper.VesselSegmentatioMethodType ?? defaultVesselSegmentatioMethodType;
+		}
+		
 		/// <summary>
 		/// Initialize class fields
 		/// </summary>
@@ -136,7 +158,7 @@ namespace RetinalVessel
 		/// <param name="img">Bitmap input image</param>
 		/// <param name="invert">Flag that decides whether to invert the pixel values ​​of the image</param>
 		/// <param name="canalType">Canal of image to work on</param>
-		public void SetInput(Bitmap img, bool invert, CanalType canalType = CanalType.GREEN)
+		public void SetInput(Bitmap img, bool invert = true, CanalType canalType = CanalType.GREEN)
 		{
 			height = img.Height;
 			width = img.Width;
@@ -209,6 +231,35 @@ namespace RetinalVessel
 		}
 
 		/// <summary>
+		/// Calculate parameters for SVM segmentation for one pixel
+		/// </summary>
+		/// <param name="x">x coordinate of pixel</param>
+		/// <param name="y">y coordinate of pixel</param>
+		/// <returns>SVM Input Vector</returns>
+		public SVMFeatures CalculateSVMInputVectorPerPixel(int x, int y)
+		{
+			double averageWindowGrayScale = GetAverageWindowGrayScale(x, y);
+			double largestLineAverageGrayLevel = GetLargestLineAverageGrayLevel(x, y, out double largestSmallLineAverageGrayLevel);
+			double pixelPowerOfMainLine = largestLineAverageGrayLevel - averageWindowGrayScale;
+			return new SVMFeatures()
+			{
+				PixelGrayLevel = canalPixels[y][x],
+				PixelPowerOfMainLine = pixelPowerOfMainLine,
+				PixelPowerOfSmallLine = largestSmallLineAverageGrayLevel - averageWindowGrayScale
+			};
+		}
+
+		/// <summary>
+		/// Calculate parameters for SVM segmentation for one pixel
+		/// </summary>
+		/// <param name="p">point with pixel coordinates</param>
+		/// <returns>SVM Input Vector</returns>
+		public SVMFeatures CalculateSVMInputVectorPerPixel(Point p)
+		{
+			return CalculateSVMInputVectorPerPixel(p.X, p.Y);
+		}
+
+		/// <summary>
 		/// Calculate parameters for SVM segmentation and filter image by thresholding
 		/// </summary>
 		private void CalculateBothThresholdAndSVM()
@@ -226,7 +277,7 @@ namespace RetinalVessel
 						PixelPowerOfMainLine = pixelPowerOfMainLine,
 						PixelPowerOfSmallLine = largestSmallLineAverageGrayLevel - averageWindowGrayScale
 					};
-					Result[i][j] = pixelPowerOfMainLine > threshold ? byte.MaxValue : byte.MinValue;
+					Result[i][j] = pixelPowerOfMainLine > Threshold ? byte.MaxValue : byte.MinValue;
 				}
 			}
 		}
@@ -263,7 +314,7 @@ namespace RetinalVessel
 				{
 					double averageWindowGrayScale = GetAverageWindowGrayScale(j, i);
 					double largestLineAverageGrayLevel = GetLargestLineAverageGrayLevel(j, i);
-					Result[i][j] = largestLineAverageGrayLevel - averageWindowGrayScale > threshold ? byte.MaxValue : byte.MinValue;
+					Result[i][j] = largestLineAverageGrayLevel - averageWindowGrayScale > Threshold ? byte.MaxValue : byte.MinValue;
 				}
 			}
 		}

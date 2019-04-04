@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9F8F98FE-933A-4CC4-A4CD-6C75AE1BDFD4}</ProjectGuid>
+    <ProjectGuid>{76BB8769-9F9B-4CE1-B62D-420794205207}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>RetinalVessel</RootNamespace>
-    <AssemblyName>RetinalVessel</AssemblyName>
+    <RootNamespace>SVMTeacher</RootNamespace>
+    <AssemblyName>SVMTeacher</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,7 +35,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,15 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitmapWriter.cs" />
-    <Compile Include="CanalType.cs" />
-    <Compile Include="PointsPair.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SVMFeatures.cs" />
-    <Compile Include="VesselSegmentatioMethod.cs" />
-    <Compile Include="VesselSegmentator.cs" />
-    <Compile Include="VesselSegmentatorConstructorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

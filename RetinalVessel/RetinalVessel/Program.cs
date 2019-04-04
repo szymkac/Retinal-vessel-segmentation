@@ -15,16 +15,14 @@ namespace RetinalVessel
 		static void Main(string[] args)
 		{
 			VesselSegmentator vs = new VesselSegmentator();
-			vs.WindowRadius = 9;
+			vs.SetInput(new Bitmap(@"C:\Users\szyme\Downloads\im0001.png"));
 
-			vs.SetInput(new Bitmap(@"C:\Users\szyme\Downloads\im0001.png"), true);
-
-			BitmapWriter.Save(vs.GetReversedCanalPixels(), @"C:\Users\szyme\Downloads\green_canal.png");
-			BitmapWriter.Save(vs.CanalPixels, @"C:\Users\szyme\Downloads\inverted_green_canal.png");
+			BitmapWriter.Save(vs.GetReversedCanalPixels(), @"C:\Users\szyme\Downloads\im0002.png");
+			BitmapWriter.Save(vs.CanalPixels, @"C:\Users\szyme\Downloads\im0003.png");
 
 			vs.Calculate();
 			var svmFeatures = vs.SVMFeaturesMatrix;
-			BitmapWriter.Save(vs.Result, @"C:\Users\szyme\Downloads\result.png");
+			BitmapWriter.Save(vs.Result, @"C:\Users\szyme\Downloads\im0004.png");
 			Console.ReadKey();
 		}	
 	}
