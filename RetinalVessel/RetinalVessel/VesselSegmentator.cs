@@ -155,6 +155,17 @@ namespace RetinalVessel
 		/// <summary>
 		/// Setting image on which filter will work
 		/// </summary>
+		/// <param name="imgPath">Path to input image</param>
+		/// <param name="invert">Flag that decides whether to invert the pixel values ​​of the image</param>
+		/// <param name="canalType">Canal of image to work on</param>
+		public void SetInput(string imgPath, bool invert = true, CanalType canalType = CanalType.GREEN)
+		{
+			SetInput(new Bitmap(imgPath), invert, canalType);
+		}
+
+		/// <summary>
+		/// Setting image on which filter will work
+		/// </summary>
 		/// <param name="img">Bitmap input image</param>
 		/// <param name="invert">Flag that decides whether to invert the pixel values ​​of the image</param>
 		/// <param name="canalType">Canal of image to work on</param>
